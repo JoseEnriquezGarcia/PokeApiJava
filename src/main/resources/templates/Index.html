@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{Layout}">
+    <head>
+        <title>Home</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body layout:fragment="body" style="background: #5d9b2a;
+          background: linear-gradient(90deg, rgba(93, 155, 42, 1) 0%, rgba(83, 98, 150, 1) 50%, rgba(116, 237, 83, 1) 100%);">
+        <div class="row justify-content-center d-flex gap-2">
+            <div th:each="pokemon: ${listaPokemons}" class="card mt-5" style="width: 18rem; ">
+                <img th:src="${pokemon.sprites.front_default}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h2 class="card-title text-center" th:text="${pokemon.name}" style="font-family: sans-serif"></h2>
+                    <h6>Peso</h6>
+                    <div class="progress value-progress" role="progressbar" aria-label="Animated striped example" th:aria-valuenow="${pokemon.weight}" th:data-vote="${pokemon.weight}" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated progress-bar-style"  th:text="${pokemon.weight}"></div>
+                    </div>
+                    <h6>Altura</h6>
+                    <div class="progress value-progress" role="progressbar" aria-label="Animated striped example" th:aria-valuenow="${pokemon.height}" th:data-vote="${pokemon.height}" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated progress-bar-style"  th:text="${pokemon.height}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function () {
+                $(".value-progress").each(function () {
+                    var data = parseFloat($(this).data("vote"));
+                    var progress = $(this).find(".progress-bar-style");
+                    progress.css('width', data + '%');
+
+                    if (data < 20) {
+                        progress.css('width', '20%');
+                    }
+
+                    if (data >= 800) {
+                        progress.css('background', 'linear-gradient(#22C1C3, #FDBB2D)');
+                    } else if (data >= 100) {
+                        progress.css('background', 'linear-gradient(#f7971e, #ffd200)');
+                    } else {
+                        progress.css('background', 'linear-gradient(#ff416c, #ff4b2b)')
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
