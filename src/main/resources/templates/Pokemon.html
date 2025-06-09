@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{Layout}">
+    <head>
+        <title>Pokemon</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body layout:fragment="body" style="background: #020024;
+          background: radial-gradient(circle, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 30%, rgba(92, 72, 58, 1) 100%);">
+        <div class="container py-5 d-flex flex-column flex-md-row justify-content-center align-items-center gap-4">
+
+            <!-- Carrusel de sprites -->
+            <div class="card shadow-lg rounded-4 text-white" style="width: 100%; max-width: 500px; background: radial-gradient(circle, #1a1a40 0%, #2f4b7c 70%, #3f93a8 100%);">
+                <div id="carouselExample" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active" th:if="${pokemon.sprites.front_shiny != null}">
+                            <img th:src="${pokemon.sprites.front_shiny}" class="d-block w-100 rounded-top" alt="Front Shiny">
+                        </div>
+                        <div class="carousel-item" th:if="${pokemon.sprites.back_shiny != null}">
+                            <img th:src="${pokemon.sprites.back_shiny}" class="d-block w-100" alt="Back Shiny">
+                        </div>
+                        <div class="carousel-item" th:if="${pokemon.sprites.front_female != null}">
+                            <img th:src="${pokemon.sprites.front_female}" class="d-block w-100" alt="Front Female">
+                        </div>
+                        <div class="carousel-item" th:if="${pokemon.sprites.back_female != null}">
+                            <img th:src="${pokemon.sprites.back_female}" class="d-block w-100" alt="Back Female">
+                        </div>
+                        <div class="carousel-item" th:if="${pokemon.sprites.front_shiny_female != null}">
+                            <img th:src="${pokemon.sprites.front_shiny_female}" class="d-block w-100" alt="Front Shiny Female">
+                        </div>
+                        <div class="carousel-item" th:if="${pokemon.sprites.back_shiny_female != null}">
+                            <img th:src="${pokemon.sprites.back_shiny_female}" class="d-block w-100" alt="Back Shiny Female">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title text-white fw-bold">Galería de Sprites</h5>
+                    <p class="card-text">Explora los distintos aspectos visuales del Pokémon.</p>
+                    <a href="#" class="btn btn-outline-light">Ver Perfil</a>
+                </div>
+            </div>
+
+            <!-- Tarjeta de información -->
+            <div class="card shadow-lg rounded-4 text-white" style="width: 100%; max-width: 500px; background: linear-gradient(145deg, #2b2e4a 0%, #3a506b 100%);">
+                <div class="text-center p-4">
+                    <img th:src="${pokemon.sprites.front_default}" alt="Imagen de Pokémon" class="img-fluid" style="height: 180px; object-fit: contain;">
+                    <h2 class="text-capitalize mt-3 fw-bold" th:text="${pokemon.name}">Nombre</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6 mb-3">
+                            <h6><i class="bi bi-hash me-1"></i> Orden</h6>
+                            <p class="fw-semibold mb-0" th:text="${pokemon.order}">#</p>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6><i class="bi bi-reception-4 me-1"></i> Experiencia</h6>
+                            <p class="fw-semibold mb-0" th:text="${pokemon.base_experience}">0</p>
+                        </div>
+                        <div class="col-6">
+                            <h6><i class="bi bi-universal-access me-1"></i> Peso</h6>
+                            <p class="fw-semibold mb-0" th:text="${pokemon.weight}">0</p>
+                        </div>
+                        <div class="col-6 mb-4">
+                            <h6><i class="bi bi-arrows-vertical me-1"></i> Altura</h6>
+                            <p class="fw-semibold mb-0" th:text="${pokemon.height}">0</p>
+                        </div>
+                        <div class="col-6 mb-3" th:each="stats : ${pokemon.stats}">
+                            <h6 class="text-capitalize" th:text="${stats.stat.name}">Stat</h6>
+                            <div class="progress value-progress" role="progressbar"
+                                 aria-label="Stat progress"
+                                 aria-valuemin="0"
+                                 aria-valuemax="200"
+                                 th:aria-valuenow="${stats.base_stat}"
+                                 th:data-basestat="${stats.base_stat}">
+                                <div class="progress-bar progress-bar-style progress-bar-striped progress-bar-animated"
+                                     th:style="'width:' + ${stats.base_stat} + '%'"
+                                     th:text="${stats.base_stat} + '%'">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function () {
+                $(".value-progress").each(function () {
+                    var data = $(this).data("basestat");
+                    var progress = $(this).find(".progress-bar-style");
+                    progress.css('width', data + '%');
+
+                    if (data == 0) {
+                        progress.css('width', '20%');
+                    }
+
+                    if (data >= 50) {
+                        progress.css('background', 'linear-gradient(#22C1C3, #FDBB2D)');
+                    } else if (data >= 30) {
+                        progress.css('background', 'linear-gradient(#f7971e, #ffd200)');
+                    } else {
+                        progress.css('background', 'linear-gradient(#ff416c, #ff4b2b)')
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

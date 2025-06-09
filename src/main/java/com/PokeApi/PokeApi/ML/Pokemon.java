@@ -1,5 +1,7 @@
 package com.PokeApi.PokeApi.ML;
 
+import com.PokeApi.PokeApi.DTO.StatsDTO;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,4 +14,7 @@ public class Pokemon {
     private int height;
     private int base_experience;
     public Sprites sprites;
+    public Cries cries;
+    public List<Ability> abilities;
+    public List<StatsDTO> stats;
 }
