@@ -7,13 +7,17 @@
         <title>Pokemon</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            .cardPokemon:hover {
+                transform: scale(1.05);
+                transition: all 0.3s ease;
+            }
+        </style>
     </head>
     <body layout:fragment="body" style="background: #020024;
           background: radial-gradient(circle, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 30%, rgba(92, 72, 58, 1) 100%);">
         <div class="container py-5 d-flex flex-column flex-md-row justify-content-center align-items-center gap-4">
-
-            <!-- Carrusel de sprites -->
-            <div class="card shadow-lg rounded-4 text-white" style="width: 100%; max-width: 500px; background: radial-gradient(circle, #1a1a40 0%, #2f4b7c 70%, #3f93a8 100%);">
+            <div class="card shadow-lg rounded-4 text-white" style="width: 100%; max-width: 550px; background: radial-gradient(circle, #1a1a40 0%, #2f4b7c 70%, #3f93a8 100%);">
                 <div id="carouselExample" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active" th:if="${pokemon.sprites.front_shiny != null}">
@@ -51,10 +55,12 @@
                 </div>
             </div>
 
-            <!-- Tarjeta de información -->
-            <div class="card shadow-lg rounded-4 text-white" style="width: 100%; max-width: 500px; background: linear-gradient(145deg, #2b2e4a 0%, #3a506b 100%);">
+
+            <div class="card cardPokemon shadow-lg rounded-4 text-white" style="width: 100%; max-width: 550px; background: linear-gradient(145deg, #2b2e4a 0%, #3a506b 100%);">
+                <audio id="player" th:src="${pokemon.cries.latest}" style="display: none"></audio>
+                <a id="playButton" href="#" class="playButton stretched-link" onclick="play()"></a>
                 <div class="text-center p-4">
-                    <img th:src="${pokemon.sprites.front_default}" alt="Imagen de Pokémon" class="img-fluid" style="height: 180px; object-fit: contain;">
+                    <img th:src="${pokemon.sprites.front_default}" alt="Imagen de Pokémon" class="img-fluid" style="height: 178px; object-fit: contain;">
                     <h2 class="text-capitalize mt-3 fw-bold" th:text="${pokemon.name}">Nombre</h2>
                 </div>
                 <div class="card-body">
@@ -69,11 +75,11 @@
                         </div>
                         <div class="col-6">
                             <h6><i class="bi bi-universal-access me-1"></i> Peso</h6>
-                            <p class="fw-semibold mb-0" th:text="${pokemon.weight}">0</p>
+                            <p class="fw-semibold mb-0" th:text="${#numbers.formatDecimal(pokemon.weight / 10, 1, 1)} + ' KG'">0</p>
                         </div>
                         <div class="col-6 mb-4">
                             <h6><i class="bi bi-arrows-vertical me-1"></i> Altura</h6>
-                            <p class="fw-semibold mb-0" th:text="${pokemon.height}">0</p>
+                            <p class="fw-semibold mb-0" th:text="${#numbers.formatDecimal(pokemon.height / 10, 1, 1)} + ' M'">0</p>
                         </div>
                         <div class="col-6 mb-3" th:each="stats : ${pokemon.stats}">
                             <h6 class="text-capitalize" th:text="${stats.stat.name}">Stat</h6>
@@ -88,12 +94,37 @@
                                      th:text="${stats.base_stat} + '%'">
                                 </div>
                             </div>
+                        </div>                       
+                        <h6 class="col-2 mb-1"><i class="bi bi-vignette me-1"></i> Types</h6>
+                        <div class="row">
+                            <div class="btn-group rounded-pill col-2 mt-2" role="group" aria-label="Basic mixed styles example" th:each="pokemonType : ${pokemon.types}">
+                                <span class="badge" style="background: #d9071f;
+                                      background: linear-gradient(180deg, rgba(217, 7, 31, 1) 19%, rgba(72, 184, 92, 1) 53%, rgba(51, 24, 8, 1) 100%);" th:text="${pokemonType.type.name}">Secondary</span>                            
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <script>
+
+            function play() {
+                let play = document.getElementById("player");
+                let button = document.getElementById("playButton");
+
+                let isPlaying = false;
+
+                button.addEventListener('click', () => {
+                    if (isPlaying) {
+                        play.pause();
+                        isPlaying = false;
+                    } else {
+                        play.play();
+                        isPlaying = true;
+                    }
+                });
+            }
+
             $(document).ready(function () {
                 $(".value-progress").each(function () {
                     var data = $(this).data("basestat");
@@ -105,7 +136,7 @@
                     }
 
                     if (data >= 50) {
-                        progress.css('background', 'linear-gradient(#22C1C3, #FDBB2D)');
+                        progress.css('background', 'linear-gradient(#D66363, #D12E41)');
                     } else if (data >= 30) {
                         progress.css('background', 'linear-gradient(#f7971e, #ffd200)');
                     } else {

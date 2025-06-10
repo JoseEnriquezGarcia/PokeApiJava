@@ -11,40 +11,40 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-        .navcolor {
-            background: radial-gradient(circle, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 30%, rgba(92, 72, 58, 1) 100%) !important;
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
+            .navcolor {
+                background: radial-gradient(circle, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 30%, rgba(92, 72, 58, 1) 100%) !important;
+                color: white;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            }
 
-        .navcolor .navbar-brand,
-        .navcolor .nav-link,
-        .navcolor .offcanvas-title,
-        .navcolor .dropdown-item {
-            color: white !important;
-        }
+            .navcolor .navbar-brand,
+            .navcolor .nav-link,
+            .navcolor .offcanvas-title,
+            .navcolor .dropdown-item {
+                color: white !important;
+            }
 
-        .navcolor .nav-link:hover,
-        .navcolor .dropdown-item:hover {
-            color: #ffd700 !important; /* dorado al pasar el mouse */
-            background-color: transparent;
-        }
+            .navcolor .nav-link:hover,
+            .navcolor .dropdown-item:hover {
+                color: #ffd700 !important; /* dorado al pasar el mouse */
+                background-color: transparent;
+            }
 
-        .navcolor .offcanvas {
-            background: rgba(2, 0, 36, 0.95); /* fondo similar al navbar para offcanvas */
-            color: white;
-        }
+            .navcolor .offcanvas {
+                background: rgba(2, 0, 36, 0.95); /* fondo similar al navbar para offcanvas */
+                color: white;
+            }
 
-        .navcolor .btn-outline-success {
-            border-color: white;
-            color: white;
-        }
+            .navcolor .btn-outline-success {
+                border-color: white;
+                color: white;
+            }
 
-        .navcolor .btn-outline-success:hover {
-            background-color: #ffd700;
-            color: black;
-        }
-    </style>
+            .navcolor .btn-outline-success:hover {
+                background-color: #ffd700;
+                color: black;
+            }
+        </style>
     </head>
 
     <nav class="navbar navcolor">
@@ -55,7 +55,6 @@
                     aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                 <div class="offcanvas-header">
                     <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú</h5>
@@ -75,15 +74,6 @@
                             </ul>
                         </li>
                     </ul>
-
-<!--                 
-                    <form class="d-flex mt-3" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar">
-                        <button class="btn btn-outline-success" type="submit">Buscar</button>
-                    </form>
-
-                    
-                    <a class="btn btn-danger mt-4" th:href="@{/login/logout}" role="button">Logout</a>-->
                 </div>
             </div>
         </div>

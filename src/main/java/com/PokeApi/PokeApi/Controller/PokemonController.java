@@ -1,8 +1,10 @@
 package com.PokeApi.PokeApi.Controller;
 
+import com.PokeApi.PokeApi.DTO.TypeDTO;
 import com.PokeApi.PokeApi.ML.UrlPokemon;
 import com.PokeApi.PokeApi.ML.Pokemon;
 import com.PokeApi.PokeApi.ML.Result;
+import com.PokeApi.PokeApi.ML.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.core.ParameterizedTypeReference;
@@ -12,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -36,7 +40,9 @@ public class PokemonController {
 
             if (getPokemon.getStatusCode().is2xxSuccessful()) {
                 Result result = new Result();
-
+                
+                Pokemon pokemon = new Pokemon();
+                
                 result = getPokemon.getBody();
 
                 List<UrlPokemon> url = new ArrayList<>();
@@ -57,9 +63,9 @@ public class PokemonController {
                         pokemons.add(getUniquePokemon.getBody());
                     }
                 }
-
+                
                 model.addAttribute("listaPokemons", pokemons);
-                model.addAttribute("results", getPokemon.getBody());
+                model.addAttribute("results", result);
             }
         } catch (HttpStatusCodeException ex) {
             model.addAttribute("status", ex.getStatusCode());
@@ -68,36 +74,36 @@ public class PokemonController {
         }
         return "Index";
     }
-    
+
     @GetMapping("/byname/{name}")
-    public String getByName(@PathVariable String name, Model model){
-        try{
+    public String getByName(@PathVariable String name, Model model) {
+        try {
             ResponseEntity<Pokemon> response = restTemplate.exchange(urlBase + "/" + name,
                     HttpMethod.GET,
                     HttpEntity.EMPTY,
                     new ParameterizedTypeReference<Pokemon>() {
-                    });
-            
+            });
+
             if (response.getStatusCode().is2xxSuccessful()) {
                 model.addAttribute("pokemon", response.getBody());
             }
-        }catch(HttpStatusCodeException ex){
+        } catch (HttpStatusCodeException ex) {
             model.addAttribute("status", ex.getStatusCode());
             model.addAttribute("message", ex.getMessage());
             return "ErrorPage";
         }
         return "Pokemon";
     }
-    
+
     @GetMapping("/pageable")
-    public String Pageable(@RequestParam String urlPage, Model model){
+    public String Pageable(@RequestParam String urlPage, Model model) {
         try {
             ResponseEntity<Result<UrlPokemon>> response = restTemplate.exchange(urlPage,
                     HttpMethod.GET,
                     HttpEntity.EMPTY,
                     new ParameterizedTypeReference<Result<UrlPokemon>>() {
-                    });
-            
+            });
+
             if (response.getStatusCode().is2xxSuccessful()) {
                 Result result = new Result();
 
@@ -125,10 +131,30 @@ public class PokemonController {
                 model.addAttribute("listaPokemons", pokemons);
                 model.addAttribute("results", response.getBody());
             }
-            
+
         } catch (HttpStatusCodeException ex) {
             model.addAttribute("status", ex.getStatusCode());
             model.addAttribute("message", ex.getMessage());
+        }
+        return "Index";
+    }
+
+    @PostMapping("/busqueda")
+    public String Buscar(@ModelAttribute Pokemon pokemon, Model model) {
+        try {
+            ResponseEntity<Pokemon> response = restTemplate.exchange(urlBase + "/" + pokemon.getName(),
+                    HttpMethod.GET,
+                    HttpEntity.EMPTY,
+                    new ParameterizedTypeReference<Pokemon>() {
+            });
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                model.addAttribute("pokemon", response.getBody());
+            }
+        } catch (HttpStatusCodeException ex) {
+            model.addAttribute("status", ex.getStatusCode());
+            model.addAttribute("message", ex.getMessage());
+            return "ErrorPage";
         }
         return "Index";
     }
