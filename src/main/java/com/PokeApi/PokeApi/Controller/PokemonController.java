@@ -32,21 +32,23 @@ public class PokemonController {
     @GetMapping
     public String GetAll(Model model) {
         try {
-            ResponseEntity<Result<UrlPokemon>> getPokemon = restTemplate.exchange(urlBase,
+            ResponseEntity<Result<UrlPokemon>> getPokemon = restTemplate.exchange(urlBase + "?offset=0&limit=40",
                     HttpMethod.GET,
                     HttpEntity.EMPTY,
                     new ParameterizedTypeReference<Result<UrlPokemon>>() {
             });
 
+            ResponseEntity<Result> getType = restTemplate.exchange("https://pokeapi.co/api/v2/type",
+                    HttpMethod.GET,
+                    HttpEntity.EMPTY,
+                    new ParameterizedTypeReference<Result>() {
+            });
+
             if (getPokemon.getStatusCode().is2xxSuccessful()) {
                 Result result = new Result();
-                
-                Pokemon pokemon = new Pokemon();
-                
+                Pokemon pokemonSearch = new Pokemon();
                 result = getPokemon.getBody();
-
                 List<UrlPokemon> url = new ArrayList<>();
-
                 url = result.results;
 
                 //Lista pokemones
@@ -63,9 +65,11 @@ public class PokemonController {
                         pokemons.add(getUniquePokemon.getBody());
                     }
                 }
-                
+
+                model.addAttribute("types", getType.getBody());
+                model.addAttribute("pokemonSearch", pokemonSearch);
                 model.addAttribute("listaPokemons", pokemons);
-                model.addAttribute("results", result);
+                model.addAttribute("results", getPokemon.getBody());
             }
         } catch (HttpStatusCodeException ex) {
             model.addAttribute("status", ex.getStatusCode());
@@ -104,13 +108,16 @@ public class PokemonController {
                     new ParameterizedTypeReference<Result<UrlPokemon>>() {
             });
 
+            ResponseEntity<Result> getType = restTemplate.exchange("https://pokeapi.co/api/v2/type",
+                    HttpMethod.GET,
+                    HttpEntity.EMPTY,
+                    new ParameterizedTypeReference<Result>() {
+            });
+
             if (response.getStatusCode().is2xxSuccessful()) {
                 Result result = new Result();
-
                 result = response.getBody();
-
                 List<UrlPokemon> url = new ArrayList<>();
-
                 url = result.results;
 
                 //Lista pokemones
@@ -127,7 +134,10 @@ public class PokemonController {
                         pokemons.add(getUniquePokemon.getBody());
                     }
                 }
+                Pokemon pokemonSearch = new Pokemon();
 
+                model.addAttribute("types", getType.getBody());
+                model.addAttribute("pokemonSearch", pokemonSearch);
                 model.addAttribute("listaPokemons", pokemons);
                 model.addAttribute("results", response.getBody());
             }
@@ -135,6 +145,7 @@ public class PokemonController {
         } catch (HttpStatusCodeException ex) {
             model.addAttribute("status", ex.getStatusCode());
             model.addAttribute("message", ex.getMessage());
+            return "Error";
         }
         return "Index";
     }
@@ -142,19 +153,36 @@ public class PokemonController {
     @PostMapping("/busqueda")
     public String Buscar(@ModelAttribute Pokemon pokemon, Model model) {
         try {
+            ResponseEntity<Result<UrlPokemon>> getPokemon = restTemplate.exchange(urlBase,
+                    HttpMethod.GET,
+                    HttpEntity.EMPTY,
+                    new ParameterizedTypeReference<Result<UrlPokemon>>() {
+            });
+
             ResponseEntity<Pokemon> response = restTemplate.exchange(urlBase + "/" + pokemon.getName(),
                     HttpMethod.GET,
                     HttpEntity.EMPTY,
                     new ParameterizedTypeReference<Pokemon>() {
             });
-
+            
+            ResponseEntity<Result> getType = restTemplate.exchange("https://pokeapi.co/api/v2/type",
+                    HttpMethod.GET,
+                    HttpEntity.EMPTY,
+                    new ParameterizedTypeReference<Result>() {
+            });
+            
             if (response.getStatusCode().is2xxSuccessful()) {
-                model.addAttribute("pokemon", response.getBody());
+                Pokemon pokemonSearch = new Pokemon();
+                
+                model.addAttribute("types", getType.getBody());
+                model.addAttribute("pokemonSearch", pokemonSearch);
+                model.addAttribute("listaPokemons", response.getBody());
+                model.addAttribute("results", getPokemon.getBody());
             }
         } catch (HttpStatusCodeException ex) {
             model.addAttribute("status", ex.getStatusCode());
             model.addAttribute("message", ex.getMessage());
-            return "ErrorPage";
+            return "Error";
         }
         return "Index";
     }

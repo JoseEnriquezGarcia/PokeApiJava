@@ -12,6 +12,12 @@
                 transform: scale(1.05);
                 transition: all 0.3s ease;
             }
+
+
+            .custom-tooltip {
+                --bs-tooltip-bg: var(--bd-violet-bg);
+                --bs-tooltip-color: var(--bs-white);
+            }
         </style>
     </head>
     <body layout:fragment="body" style="background: #020024;
@@ -58,9 +64,13 @@
 
             <div class="card cardPokemon shadow-lg rounded-4 text-white" style="width: 100%; max-width: 550px; background: linear-gradient(145deg, #2b2e4a 0%, #3a506b 100%);">
                 <audio id="player" th:src="${pokemon.cries.latest}" style="display: none"></audio>
-                <a id="playButton" href="#" class="playButton stretched-link" onclick="play()"></a>
+                <a type="button" id="playButton" class="playButton stretched-link"
+                   data-bs-toggle="tooltip" data-bs-placement="top"
+                   data-bs-custom-class="custom-tooltip"
+                   data-bs-title="Presiona para escuchar su rugido"
+                   onclick="play()"></a>
                 <div class="text-center p-4">
-                    <img th:src="${pokemon.sprites.front_default}" alt="Imagen de Pokémon" class="img-fluid" style="height: 178px; object-fit: contain;">
+                    <img th:src="${pokemon.sprites.other.showdown.front_default}" alt="Imagen de Pokémon" class="img-fluid" style="height: 178px; object-fit: contain;">
                     <h2 class="text-capitalize mt-3 fw-bold" th:text="${pokemon.name}">Nombre</h2>
                 </div>
                 <div class="card-body">
@@ -107,7 +117,8 @@
             </div>
         </div>
         <script>
-
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
             function play() {
                 let play = document.getElementById("player");
                 let button = document.getElementById("playButton");
