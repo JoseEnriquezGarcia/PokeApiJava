@@ -34,7 +34,7 @@
                     </div>
                 </div>
                 <div th:each="pokemon : ${listaPokemons}" class="col-sm-6 col-md-4 col-lg-3">
-                    <div class="card shadow rounded-4 h-100" th:style="${}" style="background: #020024;
+                    <div class="card shadow rounded-4 h-100" style="background: #020024;
                          background: radial-gradient(circle, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(45, 102, 115, 1) 100%);">
                         <a th:href="@{/home/byname/{name}(name = ${pokemon.name})}" class="stretched-link"></a>
                         <div class="row mt-3 px-3">

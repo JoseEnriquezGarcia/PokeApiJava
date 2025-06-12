@@ -107,7 +107,7 @@ public class PokemonController {
                     HttpEntity.EMPTY,
                     new ParameterizedTypeReference<Result<UrlPokemon>>() {
             });
-
+            
             ResponseEntity<Result> getType = restTemplate.exchange("https://pokeapi.co/api/v2/type",
                     HttpMethod.GET,
                     HttpEntity.EMPTY,
