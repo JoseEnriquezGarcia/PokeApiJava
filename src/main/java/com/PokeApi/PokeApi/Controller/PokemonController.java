@@ -32,11 +32,9 @@ public class PokemonController {
     @GetMapping
     public String GetAll(Model model) {
         try {
-            ResponseEntity<Result<UrlPokemon>> getPokemon = restTemplate.exchange(urlBase + "?offset=0&limit=40",
-                    HttpMethod.GET,
-                    HttpEntity.EMPTY,
-                    new ParameterizedTypeReference<Result<UrlPokemon>>() {
-            });
+//            ResponseEntity<Result<UrlPokemon>> getPokemon = restTemplate.getForObject(urlBase + "?offset=0&limit=40",
+//                    Result
+//            );
 
             ResponseEntity<Result> getType = restTemplate.exchange("https://pokeapi.co/api/v2/type",
                     HttpMethod.GET,
