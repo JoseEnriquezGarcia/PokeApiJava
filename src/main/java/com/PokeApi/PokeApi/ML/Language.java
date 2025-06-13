@@ -1,12 +1,9 @@
 package com.PokeApi.PokeApi.ML;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class Species {
+public class Language {
     private String name;
-    private String url;
-    public List<FlavorText> flavor_text_entries;
 }

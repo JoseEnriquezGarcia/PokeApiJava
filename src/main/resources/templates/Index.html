@@ -72,15 +72,15 @@
                                 <h6 class="col-3 mb-1"><i class="bi bi-vignette me-1"></i> Types</h6>
                                 <div class="row">
                                     <div class="btn-group rounded-pill col-3 mt-1" role="group" aria-label="Basic mixed styles example" th:each="pokemonType : ${pokemon.types}">
-                                        <span class="badge" style="background: #d9071f;
-                                              background: linear-gradient(180deg, rgba(217, 7, 31, 1) 19%, rgba(72, 184, 92, 1) 53%, rgba(51, 24, 8, 1) 100%);" th:text="${pokemonType.type.name}">Secondary</span>                            
+                                        <span class="badge" th:style="'background: #d9071f; background: linear-gradient(to bottom, #33ccff 0%, #ff99cc 100%)'"
+                                              th:text="${pokemonType.type.name}">Secondary</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
+                <!--background: linear-gradient(180deg, rgba(217, 7, 31, 1) 19%, rgba(72, 184, 92, 1) 53%, rgba(51, 24, 8, 1) 100%);-->
                 <div class="row mt-4">
                     <div class="col d-flex justify-content-center">
                         <nav aria-label="Paginación">

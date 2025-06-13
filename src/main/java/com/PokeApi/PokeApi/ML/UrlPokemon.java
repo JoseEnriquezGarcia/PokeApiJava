@@ -8,4 +8,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UrlPokemon {
     private String url;
+    private String name;
 }

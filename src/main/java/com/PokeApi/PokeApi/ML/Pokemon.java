@@ -16,6 +16,7 @@ public class Pokemon {
     private int base_experience;
     public Sprites sprites;
     public Cries cries;
+    public Species species;
     public List<Ability> abilities;
     public List<StatsDTO> stats;
     public List<TypeDTO> types;

@@ -56,7 +56,7 @@
                 </div>
                 <div class="card-body text-center">
                     <h5 class="card-title text-white fw-bold">Galería de Sprites</h5>
-                    <p class="card-text">Explora los distintos aspectos visuales del Pokémon.</p>
+                    <p class="card-text" th:if="${language != null}" th:text="${language[0].flavor_text}"></p>
                     <a href="#" class="btn btn-outline-light">Ver Perfil</a>
                 </div>
             </div>
