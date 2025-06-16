@@ -1,8 +1,8 @@
 package com.PokeApi.PokeApi.DTO;
 
-import com.PokeApi.PokeApi.ML.Type;
 import lombok.Getter;
 import lombok.Setter;
+import com.PokeApi.PokeApi.ML.Type;
 
 @Getter
 @Setter

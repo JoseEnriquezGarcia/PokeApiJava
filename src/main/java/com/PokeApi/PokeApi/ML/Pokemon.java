@@ -20,4 +20,5 @@ public class Pokemon {
     public List<Ability> abilities;
     public List<StatsDTO> stats;
     public List<TypeDTO> types;
+    public Type tiposPokemon;
 }

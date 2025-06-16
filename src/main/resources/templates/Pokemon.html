@@ -12,104 +12,186 @@
                 transform: scale(1.05);
                 transition: all 0.3s ease;
             }
-
-
             .custom-tooltip {
                 --bs-tooltip-bg: var(--bd-violet-bg);
                 --bs-tooltip-color: var(--bs-white);
+            }
+            .badge-fire {
+                background: linear-gradient(to bottom, #ff416c, #ff4b2b);
+            }
+
+            .badge-water {
+                background: linear-gradient(to bottom, #33ccff, #3366ff);
+            }
+
+            .badge-grass {
+                background: linear-gradient(to bottom, #00b09b, #96c93d);
+            }
+            .badge-normal {
+                background: linear-gradient(to right, #d3d3d3, #a9a9a9);
+            }
+            .badge-fire {
+                background: linear-gradient(to right, #ff416c, #ff4b2b);
+            }
+            .badge-water {
+                background: linear-gradient(to right, #33ccff, #3366ff);
+            }
+            .badge-electric {
+                background: linear-gradient(to right, #fceabb, #f8b500);
+            }
+            .badge-grass {
+                background: linear-gradient(to right, #56ab2f, #a8e063);
+            }
+            .badge-ice {
+                background: linear-gradient(to right, #74ebd5, #acb6e5);
+            }
+            .badge-fighting {
+                background: linear-gradient(to right, #d31027, #ea384d);
+            }
+            .badge-poison {
+                background: linear-gradient(to right, #8e2de2, #4a00e0);
+            }
+            .badge-ground {
+                background: linear-gradient(to right, #c2b280, #a67c52);
+            }
+            .badge-flying {
+                background: linear-gradient(to right, #89f7fe, #66a6ff);
+            }
+            .badge-psychic {
+                background: linear-gradient(to right, #f857a6, #ff5858);
+            }
+            .badge-bug {
+                background: linear-gradient(to right, #a8e063, #56ab2f);
+            }
+            .badge-rock {
+                background: linear-gradient(to right, #ba8b02, #181818);
+            }
+            .badge-ghost {
+                background: linear-gradient(to right, #606c88, #3f4c6b);
+            }
+            .badge-dragon {
+                background: linear-gradient(to right, #200122, #6f0000);
+            }
+            .badge-dark {
+                background: linear-gradient(to right, #232526, #414345);
+            }
+            .badge-steel {
+                background: linear-gradient(to right, #bdc3c7, #2c3e50);
+            }
+            .badge-fairy {
+                background: linear-gradient(to right, #fceabb, #f8b500);
+            }
+            /* default */
+            .badge-default {
+                background: linear-gradient(to bottom, #bdc3c7, #2c3e50);
             }
         </style>
     </head>
     <body layout:fragment="body" style="background: #020024;
           background: radial-gradient(circle, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 30%, rgba(92, 72, 58, 1) 100%);">
-        <div class="container py-5 d-flex flex-column flex-md-row justify-content-center align-items-center gap-4">
-            <div class="card shadow-lg rounded-4 text-white" style="width: 100%; max-width: 550px; background: radial-gradient(circle, #1a1a40 0%, #2f4b7c 70%, #3f93a8 100%);">
-                <div id="carouselExample" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active" th:if="${pokemon.sprites.front_shiny != null}">
-                            <img th:src="${pokemon.sprites.front_shiny}" class="d-block w-100 rounded-top" alt="Front Shiny">
-                        </div>
-                        <div class="carousel-item" th:if="${pokemon.sprites.back_shiny != null}">
-                            <img th:src="${pokemon.sprites.back_shiny}" class="d-block w-100" alt="Back Shiny">
-                        </div>
-                        <div class="carousel-item" th:if="${pokemon.sprites.front_female != null}">
-                            <img th:src="${pokemon.sprites.front_female}" class="d-block w-100" alt="Front Female">
-                        </div>
-                        <div class="carousel-item" th:if="${pokemon.sprites.back_female != null}">
-                            <img th:src="${pokemon.sprites.back_female}" class="d-block w-100" alt="Back Female">
-                        </div>
-                        <div class="carousel-item" th:if="${pokemon.sprites.front_shiny_female != null}">
-                            <img th:src="${pokemon.sprites.front_shiny_female}" class="d-block w-100" alt="Front Shiny Female">
-                        </div>
-                        <div class="carousel-item" th:if="${pokemon.sprites.back_shiny_female != null}">
-                            <img th:src="${pokemon.sprites.back_shiny_female}" class="d-block w-100" alt="Back Shiny Female">
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
-                <div class="card-body text-center">
-                    <h5 class="card-title text-white fw-bold">Galería de Sprites</h5>
-                    <p class="card-text" th:if="${language != null}" th:text="${language[0].flavor_text}"></p>
-                    <a href="#" class="btn btn-outline-light">Ver Perfil</a>
-                </div>
-            </div>
-
-
-            <div class="card cardPokemon shadow-lg rounded-4 text-white" style="width: 100%; max-width: 550px; background: linear-gradient(145deg, #2b2e4a 0%, #3a506b 100%);">
-                <audio id="player" th:src="${pokemon.cries.latest}" style="display: none"></audio>
-                <a type="button" id="playButton" class="playButton stretched-link"
-                   data-bs-toggle="tooltip" data-bs-placement="top"
-                   data-bs-custom-class="custom-tooltip"
-                   data-bs-title="Presiona para escuchar su rugido"
-                   onclick="play()"></a>
-                <div class="text-center p-4">
-                    <img th:src="${pokemon.sprites.other.showdown.front_default}" alt="Imagen de Pokémon" class="img-fluid" style="height: 178px; object-fit: contain;">
-                    <h2 class="text-capitalize mt-3 fw-bold" th:text="${pokemon.name}">Nombre</h2>
-                </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-6 mb-3">
-                            <h6><i class="bi bi-hash me-1"></i> Orden</h6>
-                            <p class="fw-semibold mb-0" th:text="${pokemon.order}">#</p>
-                        </div>
-                        <div class="col-6 mb-3">
-                            <h6><i class="bi bi-reception-4 me-1"></i> Experiencia</h6>
-                            <p class="fw-semibold mb-0" th:text="${pokemon.base_experience}">0</p>
-                        </div>
-                        <div class="col-6">
-                            <h6><i class="bi bi-universal-access me-1"></i> Peso</h6>
-                            <p class="fw-semibold mb-0" th:text="${#numbers.formatDecimal(pokemon.weight / 10, 1, 1)} + ' KG'">0</p>
-                        </div>
-                        <div class="col-6 mb-4">
-                            <h6><i class="bi bi-arrows-vertical me-1"></i> Altura</h6>
-                            <p class="fw-semibold mb-0" th:text="${#numbers.formatDecimal(pokemon.height / 10, 1, 1)} + ' M'">0</p>
-                        </div>
-                        <div class="col-6 mb-3" th:each="stats : ${pokemon.stats}">
-                            <h6 class="text-capitalize" th:text="${stats.stat.name}">Stat</h6>
-                            <div class="progress value-progress" role="progressbar"
-                                 aria-label="Stat progress"
-                                 aria-valuemin="0"
-                                 aria-valuemax="200"
-                                 th:aria-valuenow="${stats.base_stat}"
-                                 th:data-basestat="${stats.base_stat}">
-                                <div class="progress-bar progress-bar-style progress-bar-striped progress-bar-animated"
-                                     th:style="'width:' + ${stats.base_stat} + '%'"
-                                     th:text="${stats.base_stat} + '%'">
-                                </div>
+        <div class="container my-4">
+            <div class="row justify-content-center g-4">
+                <div class="card pokemon-card col-12 col-md-6 me-md-5 mt-5 shadow-lg rounded-4 text-white"
+                     th:attr="data-type1=${pokemon.types[0].type.name},
+                     data-type2=${pokemon.types.size() > 1 ? pokemon.types[1].type.name : pokemon.types[0].type.name}"
+                     style="width: 100%; max-width: 600px;">
+                    <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active" th:if="${pokemon.sprites.front_shiny != null}" data-bs-interval="3000">
+                                <img th:src="${pokemon.sprites.front_shiny}" class="d-block w-100 rounded-top" alt="Front Shiny">
                             </div>
-                        </div>                       
-                        <h6 class="col-2 mb-1"><i class="bi bi-vignette me-1"></i> Types</h6>
-                        <div class="row">
-                            <div class="btn-group rounded-pill col-2 mt-2" role="group" aria-label="Basic mixed styles example" th:each="pokemonType : ${pokemon.types}">
-                                <span class="badge" style="background: #d9071f;
-                                      background: linear-gradient(180deg, rgba(217, 7, 31, 1) 19%, rgba(72, 184, 92, 1) 53%, rgba(51, 24, 8, 1) 100%);" th:text="${pokemonType.type.name}">Secondary</span>                            
+                            <div class="carousel-item" th:if="${pokemon.sprites.back_shiny != null}" data-bs-interval="3000">
+                                <img th:src="${pokemon.sprites.back_shiny}" class="d-block w-100" alt="Back Shiny">
+                            </div>
+                            <div class="carousel-item" th:if="${pokemon.sprites.front_female != null}" data-bs-interval="3000">
+                                <img th:src="${pokemon.sprites.front_female}" class="d-block w-100" alt="Front Female">
+                            </div>
+                            <div class="carousel-item" th:if="${pokemon.sprites.back_female != null}" data-bs-interval="3000">
+                                <img th:src="${pokemon.sprites.back_female}" class="d-block w-100" alt="Back Female">
+                            </div>
+                            <div class="carousel-item" th:if="${pokemon.sprites.front_shiny_female != null}" data-bs-interval="3000">
+                                <img th:src="${pokemon.sprites.front_shiny_female}" class="d-block w-100" alt="Front Shiny Female">
+                            </div>
+                            <div class="carousel-item" th:if="${pokemon.sprites.back_shiny_female != null}" data-bs-interval="3000">
+                                <img th:src="${pokemon.sprites.back_shiny_female}" class="d-block w-100" alt="Back Shiny Female">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-white fw-bold">Galería de Sprites</h5>
+                        <p class="card-text"
+                           th:text="${lenguaje != null and !#lists.isEmpty(lenguaje) and lenguaje[0].flavor_text != null} 
+                           ? ${lenguaje[0].flavor_text} 
+                           : 'No hay descripción disponible para este Pokémon.'">
+                        </p>
+                        <a href="#" class="btn btn-outline-light">Ver Perfil</a>
+                    </div>
+                </div>
+
+
+                <div class="card pokemon-card col-12 col-md-6 me-md-3 mt-5 cardPokemon shadow-lg rounded-4 text-white" 
+                     th:attr="data-type1=${pokemon.types[0].type.name},
+                     data-type2=${pokemon.types.size() > 1 ? pokemon.types[1].type.name : pokemon.types[0].type.name}"
+                     style="width: 100%; max-width: 550px;">
+                    <audio id="player" th:src="${pokemon.cries.latest}" style="display: none"></audio>
+                    <a type="button" id="playButton" class="playButton stretched-link"
+                       data-bs-toggle="tooltip" data-bs-placement="top"
+                       data-bs-custom-class="custom-tooltip"
+                       data-bs-title="Presiona para escuchar su rugido"
+                       onclick="play()"></a>
+                    <div class="text-center p-4">
+                        <img th:src="${pokemon.sprites.other.showdown.front_default != null} ? ${pokemon.sprites.other.showdown.front_default} : ${pokemon.sprites.front_default}"
+                             alt="Imagen de Pokémon"
+                             class="img-fluid"
+                             style="height: 175px; object-fit: contain;">
+
+                        <h2 class="text-capitalize mt-3 fw-bold" th:text="${pokemon.name}">Nombre</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6 mb-3">
+                                <h6><i class="bi bi-hash me-1"></i> Orden</h6>
+                                <p class="fw-semibold mb-0" th:text="${pokemon.order}">#</p>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6><i class="bi bi-reception-4 me-1"></i> Experiencia</h6>
+                                <p class="fw-semibold mb-0" th:text="${pokemon.base_experience}">0</p>
+                            </div>
+                            <div class="col-6">
+                                <h6><i class="bi bi-universal-access me-1"></i> Peso</h6>
+                                <p class="fw-semibold mb-0" th:text="${#numbers.formatDecimal(pokemon.weight / 10, 1, 1)} + ' KG'">0</p>
+                            </div>
+                            <div class="col-6 mb-4">
+                                <h6><i class="bi bi-arrows-vertical me-1"></i> Altura</h6>
+                                <p class="fw-semibold mb-0" th:text="${#numbers.formatDecimal(pokemon.height / 10, 1, 1)} + ' M'">0</p>
+                            </div>
+                            <div class="col-6 mb-3" th:each="stats : ${pokemon.stats}">
+                                <h6 class="text-capitalize" th:text="${stats.stat.name}">Stat</h6>
+                                <div class="progress value-progress" role="progressbar"
+                                     aria-label="Stat progress"
+                                     aria-valuemin="0"
+                                     aria-valuemax="200"
+                                     th:aria-valuenow="${stats.base_stat}"
+                                     th:data-basestat="${stats.base_stat}">
+                                    <div class="progress-bar progress-bar-style progress-bar-striped progress-bar-animated"
+                                         th:style="'width:' + ${stats.base_stat} + '%'"
+                                         th:text="${stats.base_stat} + '%'">
+                                    </div>
+                                </div>
+                            </div>                       
+                            <h6 class="col-3 mb-1"><i class="bi bi-vignette me-1"></i> Types</h6>
+                            <div class="row">
+                                <div class="btn-group rounded-pill col-2 mt-2" role="group" aria-label="Basic mixed styles example" th:each="tipoPokemon : ${pokemon.types}">
+                                    <span th:class="'badge badge-' + ${tipoPokemon.type.name}" th:text="${tipoPokemon.type.name}">Secondary</span>                            
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -117,8 +199,29 @@
             </div>
         </div>
         <script>
-            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+            const typeColorMap = {
+                fire: "#7a1815",
+                water: "#13225e",
+                grass: "#1d2b4a",
+                electric: "#a38f17",
+                psychic: "#8a1f1f",
+                dark: "#050505",
+                fairy: "#b68fa0",
+                ghost: "#1a1f33",
+                dragon: "#061117",
+                normal: "#4e4e4e",
+                fighting: "#4d0000",
+                flying: "#3b6998",
+                bug: "#6f7c11",
+                rock: "#7c7024",
+                ground: "#968c3c",
+                poison: "#6a2e6e",
+                steel: "#7f7f9a",
+                ice: "#5c8282"
+            };
+
             function play() {
                 let play = document.getElementById("player");
                 let button = document.getElementById("playButton");
@@ -153,6 +256,15 @@
                     } else {
                         progress.css('background', 'linear-gradient(#ff416c, #ff4b2b)')
                     }
+                });
+                $(".pokemon-card").each(function () {
+                    const type1 = $(this).data("type1");
+                    const type2 = $(this).data("type2");
+
+                    const color1 = typeColorMap[type1] || "#333";
+                    const color2 = typeColorMap[type2] || "#333";
+
+                    $(this).css("background", `radial-gradient(circle, ${color1} 40%, ${color2} 100%)`);
                 });
             });
         </script>

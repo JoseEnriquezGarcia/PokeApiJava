@@ -1,21 +1,22 @@
 package com.PokeApi.PokeApi.Controller;
 
 import com.PokeApi.PokeApi.DTO.TypeDTO;
+import com.PokeApi.PokeApi.DTO.UrlDTO;
 import com.PokeApi.PokeApi.ML.FlavorText;
-import com.PokeApi.PokeApi.ML.UrlPokemon;
+import com.PokeApi.PokeApi.DTO.UrlPokemonDTO;
 import com.PokeApi.PokeApi.ML.Pokemon;
 import com.PokeApi.PokeApi.ML.Result;
+import com.PokeApi.PokeApi.ML.ResultUrlPokemon;
 import com.PokeApi.PokeApi.ML.Species;
 import com.PokeApi.PokeApi.ML.Type;
+import com.PokeApi.PokeApi.Service.ServicePokemon;
+import com.PokeApi.PokeApi.Service.ServiceUtility;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,57 +26,31 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
 
 @Controller
 @RequestMapping("/home")
 public class PokemonController {
 
-    private RestTemplate restTemplate = new RestTemplate();
-    private String urlBase = "https://pokeapi.co/api/v2/pokemon";
+    @Autowired
+    ServicePokemon servicePokemon;
+    @Autowired
+    ServiceUtility serviceUtility;
 
     @GetMapping
-    public String GetAll(Model model) {
+    public String GetAll(Model model) throws InterruptedException, ExecutionException {
         try {
-//            Result<UrlPokemon> resultPokemon = new Result<>();
-//            
-//            resultPokemon = restTemplate.getForObject(urlBase + "?offset=0&limit=40", Result.class);
+            Pokemon pokemonBusqueda = new Pokemon();
+            CompletableFuture<ResultUrlPokemon> resultFuture = servicePokemon.getUrlPokemon();
+            ResultUrlPokemon resultUrlPokemon = resultFuture.get();
+            CompletableFuture<Result> tipoFuture = servicePokemon.getTipoPokemon();
+            Result tipoPokemon = tipoFuture.get();
+            CompletableFuture<List<Pokemon>> future = servicePokemon.getAllPokemon(resultUrlPokemon);
+            List<Pokemon> pokemones = future.get();
 
-            ResponseEntity<Result<UrlPokemon>> getPokemon = restTemplate.exchange(urlBase + "?offset=0&limit=150",
-                    HttpMethod.GET,
-                    HttpEntity.EMPTY,
-                    new ParameterizedTypeReference<Result<UrlPokemon>>() {
-            });
-
-            Result results = new Result();
-            results = restTemplate.getForObject("https://pokeapi.co/api/v2/type", Result.class);
-
-            if (getPokemon.getStatusCode().is2xxSuccessful()) {
-                Result result = new Result();
-                Pokemon pokemonSearch = new Pokemon();
-                result = getPokemon.getBody();
-                List<UrlPokemon> url = new ArrayList<>();
-                url = result.results;
-
-                //Lista pokemones
-                List<Pokemon> pokemons = new ArrayList<>();
-                pokemons = url.parallelStream()
-                        .map(urlPokemon -> {
-                            Pokemon response = restTemplate.getForObject(urlPokemon.getUrl(), Pokemon.class);
-                            return response;
-                        })
-                        .collect(Collectors.toList());
-
-                Map<String, String> colors = new HashMap<>();
-                colors.put("normal", "#9fa19f");
-                colors.put("fighting", "#ff8000");
-                colors.put("flying", "#BAAAFF");
-                
-                model.addAttribute("types", results);
-                model.addAttribute("pokemonSearch", pokemonSearch);
-                model.addAttribute("listaPokemons", pokemons);
-                model.addAttribute("results", getPokemon.getBody());
-            }
+            model.addAttribute("tipos", tipoPokemon);
+            model.addAttribute("pokemonBusqueda", pokemonBusqueda);
+            model.addAttribute("listaPokemones", pokemones);
+            model.addAttribute("results", resultUrlPokemon);
         } catch (HttpStatusCodeException ex) {
             model.addAttribute("status", ex.getStatusCode());
             model.addAttribute("message", ex.getMessage());
@@ -87,25 +62,18 @@ public class PokemonController {
     @GetMapping("/byname/{name}")
     public String getByName(@PathVariable String name, Model model) {
         try {
-            Pokemon pokemon = restTemplate.getForObject(urlBase + "/" + name, Pokemon.class);
+            Pokemon pokemon = servicePokemon.getPokemonByNombre(name);
+            Species species = servicePokemon.getSpecies(pokemon);
 
-            Species responseSpecies = restTemplate.getForObject(pokemon.species.getUrl(), Species.class);
-
-            Species species = new Species();
-            species = responseSpecies;
-
-            List<FlavorText> texto = new ArrayList<>();
-
-            texto = species.flavor_text_entries
+            List<FlavorText> descripcion = species.flavor_text_entries
                     .stream()
                     .map(t -> (FlavorText) t)
                     .filter(t -> t.language.getName().equals("es"))
                     .collect(Collectors.toList());
 
-            if (pokemon != null) {
-                model.addAttribute("language", texto);
-                model.addAttribute("pokemon", pokemon);
-            }
+            model.addAttribute("lenguaje", descripcion);
+            model.addAttribute("pokemon", pokemon);
+
         } catch (HttpStatusCodeException ex) {
             model.addAttribute("status", ex.getStatusCode());
             model.addAttribute("message", ex.getMessage());
@@ -115,40 +83,21 @@ public class PokemonController {
     }
 
     @GetMapping("/pageable")
-    public String Pageable(@RequestParam String urlPage, Model model) {
+    public String Pageable(@RequestParam String urlPage, Model model) throws InterruptedException, ExecutionException {
         try {
-            ResponseEntity<Result<UrlPokemon>> response = restTemplate.exchange(urlPage,
-                    HttpMethod.GET,
-                    HttpEntity.EMPTY,
-                    new ParameterizedTypeReference<Result<UrlPokemon>>() {
-            });
+            Pokemon pokemonBusqueda = new Pokemon();
+            ResultUrlPokemon resultUrlPokemon = serviceUtility.paginacion(urlPage);
+            CompletableFuture<Result> tipoFuture = servicePokemon.getTipoPokemon();
+            Result tipoPokemon = tipoFuture.get();
 
-            Result getType = new Result();
-            getType = restTemplate.getForObject("https://pokeapi.co/api/v2/type", Result.class);
+            //Lista pokemones
+            CompletableFuture<List<Pokemon>> future = servicePokemon.getAllPokemon(resultUrlPokemon);
+            List<Pokemon> pokemones = future.get();
 
-            if (response.getStatusCode().is2xxSuccessful()) {
-                Result result = new Result();
-                result = response.getBody();
-                List<UrlPokemon> url = new ArrayList<>();
-                url = result.results;
-
-                //Lista pokemones
-                List<Pokemon> pokemons = new ArrayList<>();
-
-                pokemons = url.parallelStream()
-                        .map(urlPokemon -> {
-                            Pokemon pokemon = restTemplate.getForObject(urlPokemon.getUrl(), Pokemon.class);
-                            return pokemon;
-                        })
-                        .collect(Collectors.toList());
-
-                Pokemon pokemonSearch = new Pokemon();
-
-                model.addAttribute("types", getType);
-                model.addAttribute("pokemonSearch", pokemonSearch);
-                model.addAttribute("listaPokemons", pokemons);
-                model.addAttribute("results", response.getBody());
-            }
+            model.addAttribute("tipos", tipoPokemon);
+            model.addAttribute("pokemonBusqueda", pokemonBusqueda);
+            model.addAttribute("listaPokemones", pokemones);
+            model.addAttribute("results", resultUrlPokemon);
 
         } catch (HttpStatusCodeException ex) {
             model.addAttribute("status", ex.getStatusCode());
@@ -159,48 +108,54 @@ public class PokemonController {
     }
 
     @PostMapping("/busqueda")
-    public String Buscar(@ModelAttribute Pokemon pokemon, Model model) {
+    public String Buscar(@ModelAttribute Pokemon pokemonBuscar, Model model) throws InterruptedException, ExecutionException {
+        Pokemon pokemonBusqueda = new Pokemon();
+        pokemonBusqueda.tiposPokemon = new Type();
+        Result result = new Result();
+        ResultUrlPokemon resultUrlPokemonFiltro = new ResultUrlPokemon();
+        resultUrlPokemonFiltro.results = new ArrayList<>();
+
         try {
-            if (!pokemon.getName().isEmpty()) {
-                ResponseEntity<Result<UrlPokemon>> getPokemon = restTemplate.exchange(urlBase + "?limit=1172&offset=0",
-                        HttpMethod.GET,
-                        HttpEntity.EMPTY,
-                        new ParameterizedTypeReference<Result<UrlPokemon>>() {
-                });
-                
-                List<UrlPokemon> url = new ArrayList<>();
-                url = getPokemon.getBody().results;
-                
-                List<UrlPokemon> urlBusqueda = new ArrayList<>();
-                
-                urlBusqueda = url.stream()
-                        .map(u ->(UrlPokemon) u)
-                        .filter(e -> e.getName().contains(pokemon.getName()))
+            if (!pokemonBuscar.getName().isEmpty()) {
+
+                CompletableFuture<ResultUrlPokemon> resultUrlFuturo = serviceUtility.busquedaGetAll();
+                ResultUrlPokemon resultUrlPokemon = resultUrlFuturo.get();
+
+                CompletableFuture<Result> tipoFuture = servicePokemon.getTipoPokemon();
+                Result tipoPokemon = tipoFuture.get();
+
+                resultUrlPokemonFiltro.results = resultUrlPokemon.results.stream()
+                        .map(u -> (UrlPokemonDTO) u)
+                        .filter(e -> e.getName().contains(pokemonBuscar.getName()))
                         .collect(Collectors.toList());
-                
-                
-                
-                
-                List<Pokemon> pokemons = new ArrayList<>();
 
-                pokemons = urlBusqueda.parallelStream()
-                        .map(urlPokemon -> {
-                            Pokemon pokemo = restTemplate.getForObject(urlBase + "/" + urlPokemon.getName(), Pokemon.class);
-                            return pokemo;
-                        })
-                        .collect(Collectors.toList());
-                
-                Result getType = new Result();
-                getType = restTemplate.getForObject("https://pokeapi.co/api/v2/type", Result.class);
+                CompletableFuture<List<Pokemon>> future = servicePokemon.getAllPokemon(resultUrlPokemonFiltro);
+                List<Pokemon> pokemones = future.get();
 
-                if (pokemons != null) {
-                    Pokemon pokemonSearch = new Pokemon();
-
-                    model.addAttribute("types", getType);
-                    model.addAttribute("pokemonSearch", pokemonSearch);
-                    model.addAttribute("listaPokemons", pokemons);
-                    model.addAttribute("results", getPokemon.getBody());
+                if (!"opcion1".equals(pokemonBuscar.tiposPokemon.getName())) {
+                    pokemones = pokemones
+                            .parallelStream()
+                            .filter(pokemon -> pokemon.types.stream()
+                            .anyMatch(type -> type.type.getName().equalsIgnoreCase(pokemonBuscar.tiposPokemon.getName())))
+                            .collect(Collectors.toList());
                 }
+                model.addAttribute("tipos", tipoPokemon);
+                model.addAttribute("pokemonBusqueda", pokemonBusqueda);
+                model.addAttribute("listaPokemones", pokemones);
+                model.addAttribute("results", result);
+            } else if (pokemonBuscar.getName().isEmpty() && !pokemonBuscar.tiposPokemon.getName().isEmpty() && !"opcion1".equals(pokemonBuscar.tiposPokemon.getName())) {
+                CompletableFuture<Result> tiposFuture = servicePokemon.getTipoPokemon();
+                Result tiposPokemon = tiposFuture.get();
+
+                Type tiposPokemonFuture = serviceUtility.busquedaByTipo(pokemonBuscar.tiposPokemon.getName());
+
+                CompletableFuture<List<Pokemon>> futurePokemonTipo = servicePokemon.getAllPokemonByType(tiposPokemonFuture.pokemon);
+                List<Pokemon> pokemonesTipo = futurePokemonTipo.get();
+
+                model.addAttribute("tipos", tiposPokemon);
+                model.addAttribute("pokemonBusqueda", pokemonBusqueda);
+                model.addAttribute("listaPokemones", pokemonesTipo);
+                model.addAttribute("results", result);
             } else {
                 GetAll(model);
             }

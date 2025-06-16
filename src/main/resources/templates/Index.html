@@ -12,6 +12,75 @@
                 transform: scale(1.05);
                 transition: all 0.3s ease;
             }
+            .badge-fire {
+                background: linear-gradient(to bottom, #ff416c, #ff4b2b);
+            }
+
+            .badge-water {
+                background: linear-gradient(to bottom, #33ccff, #3366ff);
+            }
+
+            .badge-grass {
+                background: linear-gradient(to bottom, #00b09b, #96c93d);
+            }
+            .badge-normal {
+                background: linear-gradient(to right, #d3d3d3, #a9a9a9);
+            }
+            .badge-fire {
+                background: linear-gradient(to right, #ff416c, #ff4b2b);
+            }
+            .badge-water {
+                background: linear-gradient(to right, #33ccff, #3366ff);
+            }
+            .badge-electric {
+                background: linear-gradient(to right, #fceabb, #f8b500);
+            }
+            .badge-grass {
+                background: linear-gradient(to right, #56ab2f, #a8e063);
+            }
+            .badge-ice {
+                background: linear-gradient(to right, #74ebd5, #acb6e5);
+            }
+            .badge-fighting {
+                background: linear-gradient(to right, #d31027, #ea384d);
+            }
+            .badge-poison {
+                background: linear-gradient(to right, #8e2de2, #4a00e0);
+            }
+            .badge-ground {
+                background: linear-gradient(to right, #c2b280, #a67c52);
+            }
+            .badge-flying {
+                background: linear-gradient(to right, #89f7fe, #66a6ff);
+            }
+            .badge-psychic {
+                background: linear-gradient(to right, #f857a6, #ff5858);
+            }
+            .badge-bug {
+                background: linear-gradient(to right, #a8e063, #56ab2f);
+            }
+            .badge-rock {
+                background: linear-gradient(to right, #ba8b02, #181818);
+            }
+            .badge-ghost {
+                background: linear-gradient(to right, #606c88, #3f4c6b);
+            }
+            .badge-dragon {
+                background: linear-gradient(to right, #200122, #6f0000);
+            }
+            .badge-dark {
+                background: linear-gradient(to right, #232526, #414345);
+            }
+            .badge-steel {
+                background: linear-gradient(to right, #bdc3c7, #2c3e50);
+            }
+            .badge-fairy {
+                background: linear-gradient(to right, #fceabb, #f8b500);
+            }
+            /* default */
+            .badge-default {
+                background: linear-gradient(to bottom, #bdc3c7, #2c3e50);
+            }
         </style>
     </head>
     <body layout:fragment="body" style="background: #020024;
@@ -20,22 +89,24 @@
             <div class="row justify-content-center g-4">
                 <div class="row justify-content-center">
                     <div class="col-4">
-                        <form th:action="@{/home/busqueda}" th:object="${pokemonSearch}" method="POST">
+                        <form th:action="@{/home/busqueda}" th:object="${pokemonBusqueda}" method="POST">
                             <div class="input-group">
                                 <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" th:field="*{name}" />
+                                <div class="col-4">
+                                    <select class="form-select" data-live-search="true" th:field="*{tiposPokemon.name}">
+                                        <option value="opcion1">Selecciona una opcion</option>
+                                        <option th:each="type :${tipos.results}" th:text="${type.name}" th:value="${type.name}"></option>
+                                    </select>
+                                </div>
                                 <button type="submit" class="btn btn-outline-primary ms-lg-2">buscar</button>
                             </div>
                         </form>
                     </div>
-                    <div class="col-4">
-                        <select class="form-select" data-live-search="true">
-                            <option data-tokens="ketchup mustard" th:each="type :${types.results}" th:text="${type.name}"></option>
-                        </select>
-                    </div>
                 </div>
-                <div th:each="pokemon : ${listaPokemons}" class="col-sm-6 col-md-4 col-lg-3">
-                    <div class="card shadow rounded-4 h-100" style="background: #020024;
-                         background: radial-gradient(circle, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(45, 102, 115, 1) 100%);">
+                <div th:each="pokemon : ${listaPokemones}" class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="card pokemon-card shadow rounded-4 h-100"
+                         th:attr="data-type1=${pokemon.types[0].type.name},
+                         data-type2=${pokemon.types.size() > 1 ? pokemon.types[1].type.name : pokemon.types[0].type.name}">
                         <a th:href="@{/home/byname/{name}(name = ${pokemon.name})}" class="stretched-link"></a>
                         <div class="row mt-3 px-3">
                             <div class="col-6">
@@ -71,17 +142,22 @@
                                 </p>
                                 <h6 class="col-3 mb-1"><i class="bi bi-vignette me-1"></i> Types</h6>
                                 <div class="row">
-                                    <div class="btn-group rounded-pill col-3 mt-1" role="group" aria-label="Basic mixed styles example" th:each="pokemonType : ${pokemon.types}">
-                                        <span class="badge" th:style="'background: #d9071f; background: linear-gradient(to bottom, #33ccff 0%, #ff99cc 100%)'"
-                                              th:text="${pokemonType.type.name}">Secondary</span>
+                                    <div class="btn-group rounded-pill col-3 mt-1" role="group" aria-label="Basic mixed styles example" 
+                                         th:each="tipoPokemon : ${pokemon.types}">
+                                        <span th:class="'badge badge-' + ${tipoPokemon.type.name}"
+                                              th:text="${tipoPokemon.type.name}">tipo</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!--background: linear-gradient(180deg, rgba(217, 7, 31, 1) 19%, rgba(72, 184, 92, 1) 53%, rgba(51, 24, 8, 1) 100%);-->
-                <div class="row mt-4">
+                <div class="pagination-controls text-center mt-3">
+                    <button id="prev-btn" class="btn btn-secondary me-2">Anterior</button>
+                    <span id="page-info">Página 1</span>
+                    <button id="next-btn" class="btn btn-primary ms-2">Siguiente</button>
+                </div>
+                <div class="row mt-4" th:if="${results.next != null}">
                     <div class="col d-flex justify-content-center">
                         <nav aria-label="Paginación">
                             <ul class="pagination pagination-lg">
@@ -102,5 +178,73 @@
                 </div>
             </div>
         </div>
+        <script>
+            const typeColorMap = {
+                fire: "#7a1815",
+                water: "#13225e",
+                grass: "#1d2b4a",
+                electric: "#a38f17",
+                psychic: "#8a1f1f",
+                dark: "#050505",
+                fairy: "#b68fa0",
+                ghost: "#1a1f33",
+                dragon: "#061117",
+                normal: "#4e4e4e",
+                fighting: "#4d0000",
+                flying: "#3b6998",
+                bug: "#6f7c11",
+                rock: "#7c7024",
+                ground: "#968c3c",
+                poison: "#6a2e6e",
+                steel: "#7f7f9a",
+                ice: "#5c8282"
+            };
+            $(document).ready(function () {
+                $(".pokemon-card").each(function () {
+                    const type1 = $(this).data("type1");
+                    const type2 = $(this).data("type2");
+
+                    const color1 = typeColorMap[type1] || "#333";
+                    const color2 = typeColorMap[type2] || "#333";
+
+                    $(this).css("background", `radial-gradient(circle, ${color1} 0%, ${color2} 100%)`);
+                });
+            });
+
+            $(document).ready(function () {
+                const itemsPerPage = 20;
+                const $items = $('.pokemon-card');
+                const totalPages = Math.ceil($items.length / itemsPerPage);
+                let currentPage = 1;
+
+                function showPage(page) {
+                    const start = (page - 1) * itemsPerPage;
+                    const end = start + itemsPerPage;
+
+                    $items.parent().hide(); // Oculta las columnas .col-*
+                    $items.slice(start, end).parent().show(); // Muestra solo los visibles
+
+                    $('#page-info').text(`Página ${page}`);
+                    $('#prev-btn').prop('disabled', page === 1);
+                    $('#next-btn').prop('disabled', page === totalPages);
+                }
+
+                $('#prev-btn').click(function () {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        showPage(currentPage);
+                    }
+                });
+
+                $('#next-btn').click(function () {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        showPage(currentPage);
+                    }
+                });
+
+                showPage(currentPage);
+            });
+        </script>
     </body>
 </html>
