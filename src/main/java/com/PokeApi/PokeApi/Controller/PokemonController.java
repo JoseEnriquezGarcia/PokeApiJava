@@ -116,7 +116,7 @@ public class PokemonController {
         resultUrlPokemonFiltro.results = new ArrayList<>();
 
         try {
-            if (!pokemonBuscar.getName().isEmpty()) {
+            if (!pokemonBuscar.getName().isEmpty() && "opcion1".equals(pokemonBuscar.tiposPokemon.getName())) {
 
                 CompletableFuture<ResultUrlPokemon> resultUrlFuturo = serviceUtility.busquedaGetAll();
                 ResultUrlPokemon resultUrlPokemon = resultUrlFuturo.get();
@@ -132,24 +132,40 @@ public class PokemonController {
                 CompletableFuture<List<Pokemon>> future = servicePokemon.getAllPokemon(resultUrlPokemonFiltro);
                 List<Pokemon> pokemones = future.get();
 
-                if (!"opcion1".equals(pokemonBuscar.tiposPokemon.getName())) {
-                    pokemones = pokemones
-                            .parallelStream()
-                            .filter(pokemon -> pokemon.types.stream()
-                            .anyMatch(type -> type.type.getName().equalsIgnoreCase(pokemonBuscar.tiposPokemon.getName())))
-                            .collect(Collectors.toList());
-                }
                 model.addAttribute("tipos", tipoPokemon);
                 model.addAttribute("pokemonBusqueda", pokemonBusqueda);
                 model.addAttribute("listaPokemones", pokemones);
                 model.addAttribute("results", result);
-            } else if (pokemonBuscar.getName().isEmpty() && !pokemonBuscar.tiposPokemon.getName().isEmpty() && !"opcion1".equals(pokemonBuscar.tiposPokemon.getName())) {
+                
+                //Por tipo y nombre
+            } else if (!pokemonBuscar.getName().isEmpty() && !"opcion1".equals(pokemonBuscar.tiposPokemon.getName())) {
+                CompletableFuture<Result> tiposFuture = servicePokemon.getTipoPokemon();
+                Result tipos = tiposFuture.get();
+
+                Type tiposPokemones = serviceUtility.busquedaByTipo(pokemonBuscar.tiposPokemon.getName());
+
+                Type tiposPokemon = new Type();
+                tiposPokemon.pokemon = new ArrayList<>();
+
+                tiposPokemon.pokemon = tiposPokemones.pokemon.stream()
+                        .map(u -> (UrlDTO) u)
+                        .filter(u -> u.pokemon.getName().contains(pokemonBuscar.getName()))
+                        .collect(Collectors.toList());
+
+                CompletableFuture<List<Pokemon>> futurePokemonTipo = servicePokemon.getAllPokemonByType(tiposPokemon.pokemon);
+                List<Pokemon> pokemonTipoByName = futurePokemonTipo.get();
+
+                model.addAttribute("tipos", tipos);
+                model.addAttribute("pokemonBusqueda", pokemonBusqueda);
+                model.addAttribute("listaPokemones", pokemonTipoByName);
+                model.addAttribute("results", result);
+            } else if (pokemonBuscar.getName().isEmpty() && !"opcion1".equals(pokemonBuscar.tiposPokemon.getName())) {
                 CompletableFuture<Result> tiposFuture = servicePokemon.getTipoPokemon();
                 Result tiposPokemon = tiposFuture.get();
 
-                Type tiposPokemonFuture = serviceUtility.busquedaByTipo(pokemonBuscar.tiposPokemon.getName());
+                Type tiposPokemones = serviceUtility.busquedaByTipo(pokemonBuscar.tiposPokemon.getName());
 
-                CompletableFuture<List<Pokemon>> futurePokemonTipo = servicePokemon.getAllPokemonByType(tiposPokemonFuture.pokemon);
+                CompletableFuture<List<Pokemon>> futurePokemonTipo = servicePokemon.getAllPokemonByType(tiposPokemones.pokemon);
                 List<Pokemon> pokemonesTipo = futurePokemonTipo.get();
 
                 model.addAttribute("tipos", tiposPokemon);
