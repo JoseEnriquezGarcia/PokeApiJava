@@ -19,7 +19,7 @@ public class ServiceUtility {
     @Async
     public CompletableFuture<ResultUrlPokemon> busquedaGetAll() throws InterruptedException{
 //        Thread.sleep(100L);
-        return CompletableFuture.completedFuture(restTemplate.getForObject(urlBase + "?limit=1172&offset=0", ResultUrlPokemon.class));
+        return CompletableFuture.completedFuture(restTemplate.getForObject(urlBase + "?limit=1275&offset=0", ResultUrlPokemon.class));
     }
     
     public Type busquedaByTipo(String tipoNombre) throws  InterruptedException{

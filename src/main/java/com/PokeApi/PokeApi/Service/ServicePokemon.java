@@ -1,6 +1,9 @@
 package com.PokeApi.PokeApi.Service;
 
+import com.PokeApi.PokeApi.DTO.ChainDTO;
+import com.PokeApi.PokeApi.DTO.EvolutionChainDTO;
 import com.PokeApi.PokeApi.DTO.UrlDTO;
+import com.PokeApi.PokeApi.ML.Chain;
 import com.PokeApi.PokeApi.ML.Pokemon;
 import com.PokeApi.PokeApi.ML.Result;
 import com.PokeApi.PokeApi.ML.ResultUrlPokemon;
@@ -45,6 +48,10 @@ public class ServicePokemon {
 
     public Species getSpecies(Pokemon pokemon) {
         return restTemplate.getForObject(pokemon.species.getUrl(), Species.class);
+    }
+    
+    public ChainDTO getEvolution(String url){
+        return restTemplate.getForObject(url, ChainDTO.class);
     }
     
     @Async

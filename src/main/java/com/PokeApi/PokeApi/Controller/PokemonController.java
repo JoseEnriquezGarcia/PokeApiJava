@@ -1,9 +1,12 @@
 package com.PokeApi.PokeApi.Controller;
 
+import com.PokeApi.PokeApi.DTO.ChainDTO;
+import com.PokeApi.PokeApi.DTO.EvolvesDTO;
 import com.PokeApi.PokeApi.DTO.TypeDTO;
 import com.PokeApi.PokeApi.DTO.UrlDTO;
 import com.PokeApi.PokeApi.ML.FlavorText;
 import com.PokeApi.PokeApi.DTO.UrlPokemonDTO;
+import com.PokeApi.PokeApi.ML.Chain;
 import com.PokeApi.PokeApi.ML.Pokemon;
 import com.PokeApi.PokeApi.ML.Result;
 import com.PokeApi.PokeApi.ML.ResultUrlPokemon;
@@ -64,7 +67,10 @@ public class PokemonController {
         try {
             Pokemon pokemon = servicePokemon.getPokemonByNombre(name);
             Species species = servicePokemon.getSpecies(pokemon);
-
+            ChainDTO chains = servicePokemon.getEvolution(species.evolution_chain.getUrl());
+            
+            List<EvolvesDTO> evolve = chains.evolves_to;
+            
             List<FlavorText> descripcion = species.flavor_text_entries
                     .stream()
                     .map(t -> (FlavorText) t)
