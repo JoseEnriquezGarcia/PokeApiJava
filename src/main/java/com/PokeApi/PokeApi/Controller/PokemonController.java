@@ -66,10 +66,17 @@ public class PokemonController {
     public String getByName(@PathVariable String name, Model model) {
         try {
             Pokemon pokemon = servicePokemon.getPokemonByNombre(name);
-            Species species = servicePokemon.getSpecies(pokemon);
+            Species species = servicePokemon.getSpecies(pokemon.species.getUrl());
             ChainDTO chains = servicePokemon.getEvolution(species.evolution_chain.getUrl());
             
-            List<EvolvesDTO> evolve = chains.evolves_to;
+            List<EvolvesDTO> evolucion = chains.chain.evolves_to;
+            Species speciesEvolve = evolucion.stream()
+                    .map(urlSpecies -> {
+                        Species sepeciesEvolution = servicePokemon.getSpecies(urlSpecies.species.getUrl());
+                        return sepeciesEvolution;
+                    })
+                    .findFirst().orElseThrow();
+            
             
             List<FlavorText> descripcion = species.flavor_text_entries
                     .stream()

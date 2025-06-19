@@ -46,8 +46,8 @@ public class ServicePokemon {
         return CompletableFuture.completedFuture(restTemplate.getForObject("https://pokeapi.co/api/v2/type?offset=0&limit=18", Result.class));
     }
 
-    public Species getSpecies(Pokemon pokemon) {
-        return restTemplate.getForObject(pokemon.species.getUrl(), Species.class);
+    public Species getSpecies(String url) {
+        return restTemplate.getForObject(url, Species.class);
     }
     
     public ChainDTO getEvolution(String url){

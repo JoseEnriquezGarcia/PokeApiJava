@@ -1,6 +1,7 @@
 package com.PokeApi.PokeApi.ML;
 
 import com.PokeApi.PokeApi.DTO.EvolutionChainDTO;
+import com.PokeApi.PokeApi.DTO.VarietiesDTO;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,4 +12,5 @@ public class Species {
     private String url;
     public List<FlavorText> flavor_text_entries;
     public EvolutionChainDTO evolution_chain;
+    public List<VarietiesDTO> varieties;
 }
