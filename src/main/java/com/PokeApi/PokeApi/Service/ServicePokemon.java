@@ -41,6 +41,10 @@ public class ServicePokemon {
         return restTemplate.getForObject(urlBase + "/" + nombre, Pokemon.class);
     }
     
+    public Pokemon getPokemonById(String url) {
+        return restTemplate.getForObject(url, Pokemon.class);
+    }
+    
     @Async
     public CompletableFuture<Result> getTipoPokemon() throws InterruptedException {
         return CompletableFuture.completedFuture(restTemplate.getForObject("https://pokeapi.co/api/v2/type?offset=0&limit=18", Result.class));

@@ -197,6 +197,36 @@
                     </div>
                 </div>
             </div>
+            <div class="row justify-content-center g-4">
+                <div class="card pokemon-card col-12 col-md-6 me-md-5 mt-5 shadow-lg rounded-4 text-white" th:each="pokemonEvolution : ${pokemonEvolucion}"
+                     th:attr="data-type1=${pokemon.types[0].type.name},
+                     data-type2=${pokemon.types.size() > 1 ? pokemon.types[1].type.name : pokemon.types[0].type.name}"
+                     style="width: 100%; max-width: 550px;">
+                    <img th:src="${pokemonEvolution.sprites.other.showdown.front_default != null} ? ${pokemonEvolution.sprites.other.showdown.front_default} : ${pokemonEvolution.sprites.front_default}"
+                         alt="Imagen de Pokémon"
+                         class="img-fluid"
+                         style="height: 175px; object-fit: contain;">
+                    <div class="card-body">
+                        <div class="row justify-content-center">
+                            <div class="col-6">
+                                <h4 class="card-title" th:text="${pokemonEvolution.name}">Card title</h4>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6><i class="bi bi-hash me-1"></i> Orden</h6>
+                                <p class="fw-semibold mb-0" th:text="${pokemon.order}">#</p>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-6">
+                                <a href="#" class="card-link">Card link</a>
+                            </div>
+                            <div class="col-6">
+                                <a href="#" class="card-link">Another link</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <script>
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');

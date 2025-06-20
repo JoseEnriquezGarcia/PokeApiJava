@@ -68,7 +68,7 @@ public class PokemonController {
             Pokemon pokemon = servicePokemon.getPokemonByNombre(name);
             Species species = servicePokemon.getSpecies(pokemon.species.getUrl());
             ChainDTO chains = servicePokemon.getEvolution(species.evolution_chain.getUrl());
-            
+
             List<EvolvesDTO> evolucion = chains.chain.evolves_to;
             Species speciesEvolve = evolucion.stream()
                     .map(urlSpecies -> {
@@ -76,8 +76,12 @@ public class PokemonController {
                         return sepeciesEvolution;
                     })
                     .findFirst().orElseThrow();
-            
-            
+
+            List<Pokemon> evolucionPokemon = speciesEvolve.varieties.stream().map(urlPokemon -> {
+                Pokemon pokemonEvolucion = servicePokemon.getPokemonById(urlPokemon.pokemon.getUrl());
+                return pokemonEvolucion;
+            }).collect(Collectors.toList());
+
             List<FlavorText> descripcion = species.flavor_text_entries
                     .stream()
                     .map(t -> (FlavorText) t)
@@ -86,6 +90,7 @@ public class PokemonController {
 
             model.addAttribute("lenguaje", descripcion);
             model.addAttribute("pokemon", pokemon);
+            model.addAttribute("pokemonEvolucion", evolucionPokemon);
 
         } catch (HttpStatusCodeException ex) {
             model.addAttribute("status", ex.getStatusCode());
@@ -149,7 +154,7 @@ public class PokemonController {
                 model.addAttribute("pokemonBusqueda", pokemonBusqueda);
                 model.addAttribute("listaPokemones", pokemones);
                 model.addAttribute("results", result);
-                
+
                 //Por tipo y nombre
             } else if (!pokemonBuscar.getName().isEmpty() && !"opcion1".equals(pokemonBuscar.tiposPokemon.getName())) {
                 CompletableFuture<Result> tiposFuture = servicePokemon.getTipoPokemon();
